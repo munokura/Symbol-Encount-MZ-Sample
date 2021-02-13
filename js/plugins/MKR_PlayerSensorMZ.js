@@ -18,10 +18,9 @@
  * @author Artemis
  *
  * @help マンカインド様作、プレイヤー探索プラグインのMZ移植版です。
- * 基本的な動きは変わっておりませんので、下記の移植元ヘルプを
- * ご参照ください。
+ * 基本的な動きは変わっておりません。
  *
- * ===移植元ヘルプより===
+ * ★～MZ版での使用方法～★
  * 対象イベント(以下、探索者)の視界の範囲を描画し、
  * 範囲内にプレイヤーが存在した場合、
  * その探索者は発見状態となり指定されたスイッチをONにします。
@@ -38,23 +37,23 @@
  *
  * 簡単な使い方説明:
  *   探索者にしたいイベントのメモ欄を設定し、
- *   探索者がいるマップでプラグインコマンド PSS start を実行すると、
+ *   探索者がいるマップでプラグインコマンド「探索開始」を実行すると、
  *   そのマップにいる全ての探索者が探索を開始します。
  *   (探索一時無効状態になっている探索者を除く)
  *
- *   探索者がいるマップでプラグインコマンド PSS force_start を実行すると、
+ *   探索者がいるマップでプラグインコマンド「強制探索開始」を実行すると、
  *   そのマップにいる全ての探索者が探索を開始します。
  *   (探索一時無効状態になっている探索者も探索を開始します)
 
- *   探索者のイベント内でプラグインコマンド PSS t_start を実行すると、
+ *   探索者のイベント内でプラグインコマンド「対象探索者の探索開始」を実行すると、
  *   その探索者が探索を開始します。
  *   (探索一時無効状態となっている探索者に対しても探索を開始させます。)
  *
- *   探索者のイベント内でプラグインコマンド PSS t_stop を実行すると、
+ *   探索者のイベント内でプラグインコマンド「対象探索者の探索停止」を実行すると、
  *   その探索者が探索を停止します。
  *   (プレイヤーを未発見として状態が更新されます。)
  *
- *   探索者がいるマップでプラグインコマンド  PSS stop を実行すると、
+ *   探索者がいるマップでプラグインコマンド「探索停止」を実行すると、
  *   そのマップにいる全探索者が探索を停止します。
  *   (プレイヤーを未発見として状態が更新されます。)
  *
@@ -94,9 +93,9 @@
  *     ・探索者の前方Xマスが範囲ですが、
  *       先頭に ! を付けると探索一時無効状態となります。
  *
- *     ・この状態の場合、後述するプラグインコマンド:PSS start実行時点では
+ *     ・この状態の場合、後述するプラグインコマンド:「探索開始」実行時点では
  *       探索が開始されず、
- *         プラグインコマンド:PSS t_start か
+ *         プラグインコマンド:「対象探索者の探索開始」か
  *         スクリプトコマンド:$gameSystem.onSensor(eventId) で
  *       個別に探索を開始させる必要があります。
  *
@@ -294,7 +293,7 @@
  *       探索開始処理になります。
  *       (探索一時無効状態の探索者は対象外です)
  *
- *   全て探索開始
+ *   強制探索開始
  *     ・コマンドを実行したマップ上に存在する全ての探索者が
  *       探索開始処理になります。
  *       (探索一時無効状態の探索者も対象となります)
@@ -304,7 +303,7 @@
  *       探索停止処理状態になります。
  *       (プレイヤーを未発見として状態が更新されます。)
  *
- *   セルフスイッチ初期化(全)
+ *   全探索者のスイッチ初期化
  *     ・コマンドを実行したマップ上に存在する全ての探索者を対象に、
  *       プラグインパラメーター[発見後操作スイッチ]で
  *       指定した(セルフ)スイッチ、
@@ -316,22 +315,7 @@
  *       (X,Y はセルフスイッチ/スイッチ番号。
  *        スペース区切りで記載してください)
  *
- *   強制ロスト状態移行(発見)
- *     ・コマンドを実行したマップ上に存在するプレイヤー発見状態の探索者を
- *       ロスト状態へ強制移行させます。
- *
- *   対象探索者の探索開始
- *     ・このコマンドを実行した探索者を
- *       探索開始状態にします。
- *
- *     ・実際に探索を行わせるためには事前にPSS startコマンドの
- *       実行が必要です。
- *
- *   対象探索者の探索停止
- *     ・このコマンドを実行した探索者を探索停止状態にします。
- *       (プレイヤーを未発見として状態が更新されます。)
- *
- *   セルフスイッチ初期化 ...
+ *   対象探索者のスイッチ初期化
  *     ・このコマンドを実行した探索者を対象に、
  *       プラグインパラメーター[発見後操作スイッチ]で
  *       指定した(セルフ)スイッチ、
@@ -342,9 +326,24 @@
  *       同様にOFFにします。まとめてOFFにしたい場合に指定してください。
  *       (セルフスイッチ/スイッチ番号はスペース区切りで記載してください)
  *
- *   強制ロスト状態移行
+ *   全探索者の強制ロスト
+ *     ・マップ上に存在するプレイヤー発見状態の探索者を
+ *       ロスト状態へ強制移行させます。
+ *
+ *   対象探索者の強制ロスト
  *     ・このコマンドを実行したプレイヤー発見状態の探索者を
  *       ロスト状態へ強制移行させます。
+ *
+ *   対象探索者の探索開始
+ *     ・このコマンドを実行した探索者を
+ *       探索開始状態にします。
+ *
+ *     ・実際に探索を行わせるためには事前に「探索開始」コマンドの
+ *       実行が必要です。
+ *
+ *   対象探索者の探索停止
+ *     ・このコマンドを実行した探索者を探索停止状態にします。
+ *       (プレイヤーを未発見として状態が更新されます。)
  *
  *   対象探索者の移動
  *     ・このコマンドを実行した時点のプレイヤー位置に隣接する位置まで、
@@ -371,7 +370,7 @@
  *     ・指定したイベントIDを持つ探索者を探索開始状態にします。
  *       探索停止/一時無効状態の探索者に対し探索を再開させる場合に使用します。
  *
- *     ・探索を開始させるためには事前にPSS start(PSS force_start)コマンドの
+ *     ・探索を開始させるためには事前に「探索開始」(「強制探索開始」)コマンドの
  *       実行が必要です。
  *
  *   $gameSystem.offSensor(eventId)
@@ -604,16 +603,16 @@
  * @desc 探索を開始します
  *
  * @command force_start
- * @text 全て探索開始
- * @desc 全ての探索を開始します。
+ * @text 強制探索開始
+ * @desc 強制的に探索を開始します。
  *
  * @command stop
  * @text 探索停止
  * @desc 探索を停止します。
  *
  * @command reset
- * @text セルフスイッチ初期化(全)
- * @desc 全探索者のセルフスイッチを初期化します
+ * @text 全探索者のスイッチ初期化
+ * @desc 全探索者の(セルフ)スイッチを初期化します
  *
  * @arg sw_ids
  * @type switch[]
@@ -635,8 +634,8 @@
  * @value D
  *
  * @command t_reset
- * @text セルフスイッチ初期化
- * @desc 対象探索者のセルフスイッチを初期化します。
+ * @text 対象探索者のスイッチ初期化
+ * @desc 対象探索者の(セルフ)スイッチを初期化します。
  *
  * @arg sw_ids
  * @type switch[]
@@ -658,12 +657,12 @@
  * @value D
  *
  * @command lost
- * @text 強制ロスト状態移行(発見)
- * @desc 発見状態の探索者を強制ロスト状態に移行させます。
+ * @text 全探索者の強制ロスト
+ * @desc 発見状態の全探索者を強制ロスト状態に移行させます。
  *
  * @command t_lost
- * @text 強制ロスト状態移行
- * @desc 対象探索者を強制ロスト状態に移行させる
+ * @text 対象探索者の強制ロスト
+ * @desc 発見状態の対象探索者を強制ロスト状態に移行させます。
  *
  * @command t_start
  * @text 対象探索者の探索開始
@@ -1071,7 +1070,7 @@
     //  ・プレイヤー探索制御プラグインコマンドを定義
     //=========================================================================
     function _eventId() {
-        return $gameMap._interpreter.eventId();
+        return $gameTemp.getEventId_MKR() || 0;
     }
 
     function toAryArgs(args) {
@@ -1083,7 +1082,7 @@
         $gameSystem.startSensor();
     });
 
-    // 全て探索開始
+    // 強制探索開始
     PluginManager.registerCommand(PNAME, "force_start", args => {
         $gameSystem.startSensor(1);
     });
@@ -1093,36 +1092,36 @@
         $gameSystem.stopSensor();
     });
 
-    // 全探索者のセルフスイッチ初期化
+    // 全探索者のスイッチ初期化
     PluginManager.registerCommand(PNAME, "reset", args => {
         const sw_ids = toAryArgs(args.sw_ids);
         const slfsw_ids = toAryArgs(args.slfsw_ids);
         $gameSystem.resetSensor([...sw_ids, ...slfsw_ids]);
     });
 
-    // 対象探索者のセルフスイッチ初期化
+    // 対象探索者のスイッチ初期化
     PluginManager.registerCommand(PNAME, "t_reset", args => {
         const sw_ids = toAryArgs(args.sw_ids);
         const slfsw_ids = toAryArgs(args.slfsw_ids);
         $gameSystem.neutralSensor(_eventId(), [...sw_ids, ...slfsw_ids]);
     });
 
-    // 発見状態の探索者を強制ロスト状態に移行させる
+    // 全探索者の強制ロスト
     PluginManager.registerCommand(PNAME, "lost", args => {
         $gameSystem.allForceLost();
     });
 
-    // 対象探索者を強制ロスト状態に移行させる
+    // 対象探索者の強制ロスト
     PluginManager.registerCommand(PNAME, "t_lost", args => {
         $gameSystem.forceLost(_eventId());
     });
 
-    // 対象探索者を探索開始状態にする
+    // 対象探索者の探索開始
     PluginManager.registerCommand(PNAME, "t_start", args => {
         $gameSystem.onSensor(_eventId());
     });
 
-    // 対象探索者を探索停止状態にする
+    // 対象探索者の探索停止
     PluginManager.registerCommand(PNAME, "t_stop", args => {
         $gameSystem.offSensor(_eventId());
     });
@@ -1131,6 +1130,24 @@
     PluginManager.registerCommand(PNAME, "t_move", args => {
         $gameMap._interpreter.moveNearPlayer(args[0]);
     });
+
+    //=========================================================================
+    // Game_Temp
+    //  ・MZ専用処理を定義
+    //=========================================================================
+    const _Game_Temp_initialize = Game_Temp.prototype.initialize;
+    Game_Temp.prototype.initialize = function() {
+        _Game_Temp_initialize.call(this);
+        this._eventId_MKR = 0;
+    };
+
+    Game_Temp.prototype.getEventId_MKR = function() {
+        return this._eventId_MKR;
+    };
+
+    Game_Temp.prototype.setEventId_MKR = function(eventId) {
+        this._eventId_MKR = eventId;
+    };
 
     //=========================================================================
     // Game_Interpreter
@@ -1173,6 +1190,12 @@
         } else {
             return false;
         }
+    };
+
+    const _Game_Interpreter_setup = Game_Interpreter.prototype.setup;
+    Game_Interpreter.prototype.setup = function(list, eventId) {
+        _Game_Interpreter_setup.call(this, list, eventId);
+        $gameTemp.setEventId_MKR(eventId);
     };
 
     //=========================================================================
