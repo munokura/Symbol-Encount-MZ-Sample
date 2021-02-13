@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/mit-license.php
 // ===================================================
 //=============================================================================
-// MKR_PlayerSensor.js  移植元バージョン：ver.2.5.1
+// MKR_PlayerSensor.js  移植元バージョン：ver.3.0.0
 //=============================================================================
 // Copyright (c) 2016 マンカインド
 // This software is released under the MIT License.
@@ -289,22 +289,22 @@
  *
  *
  * プラグインコマンド:
- *   PSS start
+ *   探索開始
  *     ・コマンドを実行したマップ上に存在する全ての探索者が
  *       探索開始処理になります。
  *       (探索一時無効状態の探索者は対象外です)
  *
- *   PSS force_start
+ *   全て探索開始
  *     ・コマンドを実行したマップ上に存在する全ての探索者が
  *       探索開始処理になります。
  *       (探索一時無効状態の探索者も対象となります)
  *
- *   PSS stop
+ *   探索停止
  *     ・コマンドを実行したマップ上に存在する全ての探索者が
  *       探索停止処理状態になります。
  *       (プレイヤーを未発見として状態が更新されます。)
  *
- *   PSS reset X Y ...
+ *   セルフスイッチ初期化(全)
  *     ・コマンドを実行したマップ上に存在する全ての探索者を対象に、
  *       プラグインパラメーター[発見後操作スイッチ]で
  *       指定した(セルフ)スイッチ、
@@ -316,23 +316,22 @@
  *       (X,Y はセルフスイッチ/スイッチ番号。
  *        スペース区切りで記載してください)
  *
- *   PSS lost
+ *   強制ロスト状態移行(発見)
  *     ・コマンドを実行したマップ上に存在するプレイヤー発見状態の探索者を
  *       ロスト状態へ強制移行させます。
- *       (ロストするまでの時間は[プレイヤーロスト時設定]に従います)
  *
- *   PSS t_start
+ *   対象探索者の探索開始
  *     ・このコマンドを実行した探索者を
  *       探索開始状態にします。
  *
  *     ・実際に探索を行わせるためには事前にPSS startコマンドの
  *       実行が必要です。
  *
- *   PSS t_stop
+ *   対象探索者の探索停止
  *     ・このコマンドを実行した探索者を探索停止状態にします。
  *       (プレイヤーを未発見として状態が更新されます。)
  *
- *   PSS t_reset X Y ...
+ *   セルフスイッチ初期化 ...
  *     ・このコマンドを実行した探索者を対象に、
  *       プラグインパラメーター[発見後操作スイッチ]で
  *       指定した(セルフ)スイッチ、
@@ -343,12 +342,11 @@
  *       同様にOFFにします。まとめてOFFにしたい場合に指定してください。
  *       (セルフスイッチ/スイッチ番号はスペース区切りで記載してください)
  *
- *   PSS t_lost
+ *   強制ロスト状態移行
  *     ・このコマンドを実行したプレイヤー発見状態の探索者を
  *       ロスト状態へ強制移行させます。
- *       (ロストするまでの時間は[プレイヤーロスト時設定]に従います)
  *
- *   PSS t_move X
+ *   対象探索者の移動
  *     ・このコマンドを実行した時点のプレイヤー位置に隣接する位置まで、
  *       このコマンドを実行したイベントを移動させます。
  *
@@ -397,12 +395,10 @@
  *   $gameSystem.allForceLost()
  *     ・現在のマップに存在する、プレイヤー発見状態の探索者を
  *       ロスト状態へ強制移行させます。
- *       (ロストするまでの時間は[プレイヤーロスト時設定]に従います)
  *
  *   $gameSystem.forceLost(eventId)
  *     ・指定したイベントIDを持つ探索者がプレイヤー発見状態である場合、
  *       ロスト状態へ強制移行させます。
- *       (ロストするまでの時間は[プレイヤーロスト時設定]に従います)
  *
  *
  * 補足：
@@ -1929,8 +1925,11 @@
                      this.foundPlayer();
                  }
                  if (this.getLostDelay() < this.getLostMaxDelay()) this.resetLostDelay();
-             // プレイヤー発見状態または、強制ロストが有効
-             } else if (this.getFoundStatus() === 1 || this.getForceLost() > 0) {
+             // 強制ロストが有効
+             } else if(this.getForceLost() > 0) {
+                 this.lostPlayer(true);
+             // プレイヤー発見状態
+             } else if(this.getFoundStatus() == 1) {
                  this.lostPlayer();
                  if (this.getFoundDelay() < this.getFoundMaxDelay()) {
                      this.resetFoundDelay();
@@ -1984,9 +1983,9 @@
         }
     };
 
-    Game_Event.prototype.lostPlayer = function() {
+    Game_Event.prototype.lostPlayer = function(forceLost = false) {
         const delay = this.getLostDelay();
-        if (delay <= 0) {
+        if (delay <= 0 || forceLost) {
             const sensorSwitch = DefSensorSwitch[0];
             const lostSensorSwitch = DefLostSensorSwitch[0];
             const mapId = $gameMap.mapId();
@@ -2743,8 +2742,8 @@
         const rangeVisible = this._character.getRangeVisible();
         const defVisible = ConvSw(DefRangeVisible[0]);
         if (this._character && this._character._erased) {
-            this.parent.removeChild(this);
             this.parent.removeChild(this._spriteSD);
+            this.parent.removeChild(this);
         }
         if (this._character &&
             !this._character._erased &&
