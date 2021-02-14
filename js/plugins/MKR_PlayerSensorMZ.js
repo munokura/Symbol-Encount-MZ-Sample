@@ -2951,9 +2951,8 @@
                 if(this.bitmap.width != width || this.bitmap.height != height) {
                     this.bitmap.clear();
                     this.bitmap = new Bitmap(width, height);
-                    this._spriteSD.bitmap.clear();
-                    this._spriteSD.bitmap = new Bitmap(tileWidth * 3, tileHeight * 3);
                 }
+                this._spriteSD.bitmap.clear();
                 this.bitmap.fillViewRangeLine(color, this._character, this._spriteSD);
                 break;
             case "f":
@@ -2981,10 +2980,9 @@
                 if(this.bitmap.width != width || this.bitmap.height != height) {
                     this.bitmap.clear();
                     this.bitmap = new Bitmap(width, height);
-                    this._spriteSD.bitmap.clear();
-                    this._spriteSD.bitmap = new Bitmap(tileWidth * 3, tileHeight * 3);
                 }
                 if (sensorType === "f") {
+                    this._spriteSD.bitmap.clear();
                     this.bitmap.fillViewRangeFan(color, this._character, this._spriteSD);
                 } else {
                     this.bitmap.fillViewRangeFrontDiamond(color, this._character);
@@ -3132,7 +3130,7 @@
                 cy = height - tileHeight;
                 distanceX = cx - tileWidth;
                 distanceY = cy - Math.abs(coordinates[0][num]) * tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 8]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 8]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
             }
         } else if (direction === DIR_RIGHT) {
@@ -3142,7 +3140,7 @@
                 cy = height / 2;
                 distanceX = cx + Math.abs(coordinates[0][num]) * tileWidth;
                 distanceY = cy - tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 6]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 6]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
             }
         } else if (direction === DIR_LEFT) {
@@ -3152,7 +3150,7 @@
                 cy = height / 2 - tileHeight;
                 distanceX = cx - Math.abs(coordinates[0][num]) * tileWidth;
                 distanceY = cy + tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 4]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 4]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
             }
         } else if (direction === DIR_DOWN) {
@@ -3162,7 +3160,7 @@
                 cy = 0;
                 distanceX = cx + tileWidth;
                 distanceY = cy + Math.abs(coordinates[0][num]) * tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 2]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 2]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
             }
         }
@@ -3181,7 +3179,7 @@
         const coordinates = character.getCoordinate();
         const cnt = coordinates.length;
         const dirFixed = character.getDirectionFixed();
-        const direction = (dirFixed === -1)? _direction : dirFixed;
+        const direction = dirFixed === -1 ? _direction : dirFixed;
         const sideSensorR = character.getBothSensorRight();
         const sideSensorL = character.getBothSensorLeft();
         let cx, cy, num, distanceX, distanceY, sign;
@@ -3197,7 +3195,7 @@
                 cy = height - tileHeight;
                 distanceX = cx - tileWidth;
                 distanceY = height - tileHeight - Math.abs(coordinates[0][num]) * tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 8]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 8]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
                 for (let i = 1, j = 2; j < cnt; i++, j++) {
                     if (coordinates[j][2] === "Add") {
@@ -3224,7 +3222,7 @@
                 cy = height / 2;
                 distanceX = tileWidth / 2 + Math.abs(coordinates[0][num]) * tileWidth;
                 distanceY = cy - tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 6]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 6]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
                 for (let i = 1, j = 2; j < cnt; i++, j++) {
                     if (coordinates[j][2] === "Add") {
@@ -3253,7 +3251,7 @@
                 distanceX = width - Math.abs(coordinates[0][num]) * tileWidth;
                 distanceX -= tileWidth/ 2;
                 distanceY = cy - tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 4]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 4]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
                 for (let i = 1, j = 2; j < cnt; i++, j++) {
                     if (coordinates[j][2] === "Add") {
@@ -3281,7 +3279,7 @@
                 cy = 0;
                 distanceX = cx + tileWidth;
                 distanceY = Math.abs(coordinates[0][num]) * tileHeight;
-                this.mkrSideDrawLine(contextSD, [sideSensorR, sideSensorL, 2]);
+                this.mkrSideDrawLine(contextSD, [sideSensorL, sideSensorR, 2]);
                 this.mkrDrawLine(context, cx, cy, distanceX, distanceY);
                 for (let i = 1, j = 2; j < cnt; i++, j++) {
                     if (coordinates[j][2] === "Add") {
