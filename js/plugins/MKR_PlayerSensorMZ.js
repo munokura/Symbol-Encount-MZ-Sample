@@ -448,25 +448,28 @@
  *
  * @param Both_Sensor
  * @text 両隣の視界
- * @desc [初期値:スイッチ可] 探索者の両隣を探索範囲とする場合はON、しない場合はOFFを指定してください。
- * @type combo
- * @option ON
- * @option OFF
- * @default OFF
+ * @desc 探索者の両隣を探索範囲とするかの設定です。
+ * (デフォルト:探索範囲としない)
+ * @type boolean
+ * @on 探索範囲とする
+ * @off 探索範囲としない
+ * @default false
  * @parent 探索設定
  *
  * @param Terrain_Decision
- * @text 通行不可タイル考慮
- * @desc [初期値:スイッチ可] 視界範囲に通行不可タイルの存在を考慮させる場合はON、しない場合はOFFを指定してください。
- * @type combo
- * @option ON
- * @option OFF
- * @default ON
+ * @text 通行不可タイルの考慮
+ * @desc 視界範囲にある通行不可タイルの存在を考慮するかの設定です。
+ * (デフォルト:考慮する)
+ * @type boolean
+ * @on 考慮する
+ * @off 考慮しない
+ * @default true
  * @parent 探索設定
  *
  * @param Auto_Sensor
  * @text 探索自動開始
- * @desc マップ描画時に探索処理を自動的に開始する設定です。デフォルト:開始しない
+ * @desc マップ描画時に探索処理を自動的に開始するかの設定です。
+ * (デフォルト:開始しない)
  * @type boolean
  * @on 開始する
  * @off 開始しない
@@ -474,12 +477,13 @@
  * @parent 探索設定
  *
  * @param Event_Decision
- * @text 他イベント考慮
- * @desc [初期値:スイッチ可] 視界範囲にマップイベントの存在を考慮させる場合はON、しない場合はOFFを指定してください。
- * @type combo
- * @option ON
- * @option OFF
- * @default OFF
+ * @text 他イベントの考慮
+ * @desc 視界範囲にあるマップイベントの存在を考慮するかの設定です。
+ * (デフォルト:考慮しない)
+ * @type boolean
+ * @on 考慮する
+ * @off 考慮しない
+ * @default false
  * @parent 探索設定
  *
  * @param Region_Decision
@@ -514,16 +518,18 @@
  *
  * @param Range_Visible
  * @text 視界範囲描画
- * @desc [初期値:スイッチ可] 探索者の視界範囲を描画する場合はON、しない場合はOFFを指定してください。
- * @type combo
- * @option ON
- * @option OFF
- * @default ON
+ * @desc 探索者の視界範囲を描画するかの設定です。
+ * (デフォルト:描画する)
+ * @type boolean
+ * @on 描画する
+ * @off 描画しない
+ * @default true
  * @parent 視界設定
  *
  * @param Range_Color
  * @text 視界範囲の色
- * @desc 視界範囲を描画する際の色を選択してください。デフォルト:白
+ * @desc 視界範囲を描画する際の色を選択してください。
+ * (デフォルト:白)
  * @type select
  * @option 白
  * @value white
@@ -538,7 +544,8 @@
  *
  * @param Range_Opacity
  * @text 視界範囲の不透明度
- * @desc 視界範囲を描画する際の不透明度を数字で指定してください。デフォルト:80(0-255)
+ * @desc 視界範囲を描画する際の不透明度を数字で指定してください。
+ * デフォルト:80(0-255)
  * @type number
  * @min 0
  * @max 255
@@ -547,7 +554,8 @@
  *
  * @param Range_Position
  * @text 視界範囲位置
- * @desc 探索者の視界範囲を表示する位置を選択します。デフォルト:1(イベントの上に表示する)
+ * @desc 探索者の視界範囲を表示する位置を選択します。
+ * デフォルト:1(イベントの上に表示する)
  * @type select
  * @option イベントの上に表示する
  * @value 1
@@ -1802,19 +1810,17 @@
         return this.getSensorStatus() === 1 && this.getFoundStatus() === 1;
     };
 
-
     //=========================================================================
     // Game_Map
     //  探索開始処理の自動実行を定義します。
     //=========================================================================
-    if (DefAutoSensor[0]) {
-        const _Game_Map_setupEvents = Game_Map.prototype.setupEvents;
-        Game_Map.prototype.setupEvents = function() {
-            _Game_Map_setupEvents.call(this);
+    const _Game_Map_setupEvents = Game_Map.prototype.setupEvents;
+    Game_Map.prototype.setupEvents = function() {
+        _Game_Map_setupEvents.call(this);
+        if (DefAutoSensor[0]) {
             $gameSystem.startSensor();
-        };
-    }
-
+        }
+    };
 
     //=========================================================================
     // Game_Event
