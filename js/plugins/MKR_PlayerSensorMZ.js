@@ -3,24 +3,27 @@
 // Copyright (c) 2021 Artemis
 // This software is released under the MIT license.
 // http://opensource.org/licenses/mit-license.php
-// ===================================================
-//=============================================================================
-// MKR_PlayerSensor.js  移植元バージョン：ver.3.0.0
-//=============================================================================
-// Copyright (c) 2016 マンカインド
-// This software is released under the MIT License.
-// http://opensource.org/licenses/mit-license.php
-//=============================================================================
+// -------------
+// [Version]
+// 1.0.0 初版
+// 1.0.1 意図しない対象探索者になってしまう不具合を修正
+// ---------------------------------------------------
+//  移植元:MKR_PlayerSensor.js [ver.3.0.0]
+// ---------------------------------------------------
+//  Copyright (c) 2016 マンカインド
+//  This software is released under the MIT License.
+//  http://opensource.org/licenses/mit-license.php
+// ====================================================
 /*:
  *
- * @plugindesc プレイヤー探索プラグイン(MZ専用)
+ * @plugindesc プレイヤー探索プラグイン(MZ移植版)
  * @target MZ
  * @author Artemis
  *
  * @help マンカインド様作、プレイヤー探索プラグインのMZ移植版です。
  * 基本的な動きは変わっておりません。
  *
- * ★～MZ版での使用方法～★
+ * 【MZ版での使用方法】
  * 対象イベント(以下、探索者)の視界の範囲を描画し、
  * 範囲内にプレイヤーが存在した場合、
  * その探索者は発見状態となり指定されたスイッチをONにします。
@@ -1154,7 +1157,9 @@
     };
 
     Game_Temp.prototype.setEventId_MKR = function(eventId) {
-        this._eventId_MKR = eventId;
+        if (this.getEventId_MKR() !== eventId) {
+            this._eventId_MKR = eventId;
+        }
     };
 
     //=========================================================================
@@ -1204,6 +1209,12 @@
     Game_Interpreter.prototype.setup = function(list, eventId) {
         _Game_Interpreter_setup.call(this, list, eventId);
         $gameTemp.setEventId_MKR(eventId);
+    };
+
+    const _Game_Interpreter_executeCommand = Game_Interpreter.prototype.executeCommand;
+    Game_Interpreter.prototype.executeCommand = function() {
+        $gameTemp.setEventId_MKR(this.eventId());
+        _Game_Interpreter_executeCommand.call(this);
     };
 
     //=========================================================================
