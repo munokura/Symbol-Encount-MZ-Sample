@@ -7,6 +7,7 @@
 // [Version]
 // 1.0.0 初版
 // 1.0.1 意図しない対象探索者になってしまう不具合を修正
+// 1.0.2 プロトタイプチェーンの処理漏れを対応
 // ---------------------------------------------------
 //  移植元:MKR_PlayerSensor.js [ver.3.0.0]
 // ---------------------------------------------------
@@ -1214,7 +1215,7 @@
     const _Game_Interpreter_executeCommand = Game_Interpreter.prototype.executeCommand;
     Game_Interpreter.prototype.executeCommand = function() {
         $gameTemp.setEventId_MKR(this.eventId());
-        _Game_Interpreter_executeCommand.call(this);
+        return _Game_Interpreter_executeCommand.call(this);
     };
 
     //=========================================================================
